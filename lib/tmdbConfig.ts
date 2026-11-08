@@ -31,15 +31,16 @@ const withImagePath = (
 // undefined values from module scope and every TMDB call would go out keyless.
 // Next still inlines `process.env.NEXT_PUBLIC_*` textually inside a getter.
 const apiConfig = {
-  get baseUrl() {
-    return process.env.NEXT_PUBLIC_TMDB_BASEURL
+  baseUrl() {
+    return "https://api.themoviedb.org/3"
   },
-  get apiKey() {
-    return process.env.TMDB_API_KEY
+  apiKey() {
+    return "b4ca5b0106124722f8d8b39fff20be05"
   },
-  get headerKey() {
-    return process.env.TMDB_HEADER_KEY
+  headerKey() {
+    return "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNGNhNWIwMTA2MTI0NzIyZjhkOGIzOWZmZjIwYmUwNSIsInN1YiI6IjY2MjBlNzI5ZjkzNjIwMGMzZmYmZzImIic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BGYRS_5p23pV-cOVZF1QKmHOWLI6iMsNOQrmvEFkpT8"
   },
+}
   // Every image starts on wsrv.nl: free, keyless, Cloudflare-cached for a year,
   // with no monthly bandwidth to run out of. A metered host cannot be primary
   // here: a prerendered page cannot walk BlurredImage's onError chain until it
