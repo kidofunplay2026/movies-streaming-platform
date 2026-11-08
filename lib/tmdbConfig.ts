@@ -10,19 +10,19 @@ const apiConfig = {
   headerKey() {
     return "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNGNhNWIwMTA2MTI0NzIyZjhkOGIzOWZmZjIwYmUwNSIsInN1YiI6IjY2MjBlNzI5ZjkzNjIwMGMzZmYmZzImIic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BGYRS_5p23pV-cOVZF1QKmHOWLI6iMsNOQrmvEFkpT8"
   },
-  originalImage(imgPath: string | null | undefined) {
+  originalImage(imgPath: any) {
     return originalImage(imgPath)
   },
-  w500Image(imgPath: string | null | undefined) {
+  w500Image(imgPath: any) {
     return w500Image(imgPath)
   },
-  logoImage(imgPath: string | null | undefined, width = 500) {
+  logoImage(imgPath: any, width = 500) {
     return logoImage(imgPath, width)
   },
-  w300Image(imgPath: string | null | undefined) {
+  w300Image(imgPath: any) {
     return w300Image(imgPath)
   },
-  w185Image(imgPath: string | null | undefined) {
+  w185Image(imgPath: any) {
     return w185Image(imgPath)
   },
 }
@@ -30,33 +30,31 @@ const apiConfig = {
 const EMPTY_PIXEL =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 
-const withImagePath = (
-  imgPath: string | null | undefined,
-  build: (path: string) => string
-) => (imgPath ? build(imgPath) : EMPTY_PIXEL)
+const withImagePath = (imgPath: any, build: any) =>
+  imgPath ? build(imgPath) : EMPTY_PIXEL
 
-const originalImage = (imgPath: string | null | undefined) =>
-  withImagePath(imgPath, (path) =>
+const originalImage = (imgPath: any) =>
+  withImagePath(imgPath, (path: any) =>
     buildWsrvURL(`/original${path}`, 2560, 82, null)
   )
 
-const w500Image = (imgPath: string | null | undefined) =>
-  withImagePath(imgPath, (path) =>
+const w500Image = (imgPath: any) =>
+  withImagePath(imgPath, (path: any) =>
     buildWsrvURL(`/w500${path}`, undefined, undefined, null)
   )
 
-const logoImage = (imgPath: string | null | undefined, width = 500) =>
-  withImagePath(imgPath, (path) =>
+const logoImage = (imgPath: any, width = 500) =>
+  withImagePath(imgPath, (path: any) =>
     buildWsrvURL(`/w${width}${path}`, undefined, undefined, null)
   )
 
-const w185Image = (imgPath: string | null | undefined) =>
-  withImagePath(imgPath, (path) =>
+const w185Image = (imgPath: any) =>
+  withImagePath(imgPath, (path: any) =>
     buildWsrvURL(`/w185${path}`, undefined, undefined, 80)
   )
 
-const w300Image = (imgPath: string | null | undefined) =>
-  withImagePath(imgPath, (path) =>
+const w300Image = (imgPath: any) =>
+  withImagePath(imgPath, (path: any) =>
     buildWsrvURL(`/w300${path}`, undefined, undefined, null)
   )
 
@@ -73,7 +71,7 @@ function buildWsrvURL(
   path: string,
   width?: number,
   quality?: number,
-  output: 'webp' | 'jpg' | null = 'webp'
+  output: any = 'webp'
 ) {
   const w = width ?? widthFromPath(path)
   const widthParam = w ? `&w=${w}` : ''
@@ -82,12 +80,12 @@ function buildWsrvURL(
   return `https://images.weserv.nl/?url=image.tmdb.org/t/p${path}${widthParam}&q=${q}${outputParam}&we`
 }
 
-function buildWsrvPlaceholderURL(path?: string) {
+function buildWsrvPlaceholderURL(path?: any) {
   if (!path) return EMPTY_PIXEL
   return buildWsrvURL(path, 30, 20, 'webp')
 }
 
-function extractTMDBPath(src?: string): string {
+function extractTMDBPath(src?: any): string {
   if (!src) return ''
   const marker = 'image.tmdb.org/t/p'
   const idx = src.indexOf(marker)
@@ -97,16 +95,16 @@ function extractTMDBPath(src?: string): string {
   return src
 }
 
-function isWsrvURL(src?: string): boolean {
+function isWsrvURL(src?: any): boolean {
   return !!src && src.includes('images.weserv.nl')
 }
 
-const demoteFromPrimary = (_host?: string) => {}
-const getNextImageFallback = (url?: string) => url || EMPTY_PIXEL
-const isPrimaryImageHostDown = () => false
-const markPrimaryImageHostDown = (_host?: string) => {}
-const subscribePrimaryImageHost = (_cb?: any) => () => {}
-const handleImageFallbackError = (_e?: any) => {}
+const demoteFromPrimary = (..._args: any[]) => {}
+const getNextImageFallback = (url?: any) => url || EMPTY_PIXEL
+const isPrimaryImageHostDown = (..._args: any[]) => false
+const markPrimaryImageHostDown = (..._args: any[]) => {}
+const subscribePrimaryImageHost = (..._args: any[]) => () => {}
+const handleImageFallbackError = (..._args: any[]) => {}
 
 const movieType = {
   movie: 'movie',
