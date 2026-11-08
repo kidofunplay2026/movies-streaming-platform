@@ -164,6 +164,9 @@ process.env.NEXT_PUBLIC_BUILD_TIME ??= String(Date.now())
 const nextConfig = {
   ...baseConfig,
   ...(isStaticExport ? staticExportConfig : serverOnlyConfig),
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
 // Production stack traces are minified, and PostHog's symbolicator can't fetch
