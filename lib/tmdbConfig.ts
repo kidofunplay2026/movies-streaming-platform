@@ -41,45 +41,48 @@ const apiConfig = {
     return "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNGNhNWIwMTA2MTI0NzIyZjhkOGIzOWZmZjIwYmUwNSIsInN1YiI6IjY2MjBlNzI5ZjkzNjIwMGMzZmYmZzImIic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BGYRS_5p23pV-cOVZF1QKmHOWLI6iMsNOQrmvEFkpT8"
   },
 }
-  // Every image starts on wsrv.nl: free, keyless, Cloudflare-cached for a year,
-  // with no monthly bandwidth to run out of. A metered host cannot be primary
-  // here: a prerendered page cannot walk BlurredImage's onError chain until it
-  // has hydrated, so a spent quota leaves the whole first screen on failed images
-  // (ImageKit, 2026-10-30, LCP 6.7s on prod).
-  //
-  // Two of these are read bare, without the loader: `originalImage` by the OG and
-  // Twitter tags and the Worker's metadata, `w500Image` by the image sitemap and
-  // JSON-LD. Their consumers do not all decode WebP, so they keep the source
-  // format, and the 2560 is an unfurl width, not the page's ceiling. Everything
-  // on a page goes through lib/image-loader.ts, which sets the width, the
-  // quality (65 backdrops / 70 posters) and WebP per candidate.
-  originalImage: (imgPath: string | null | undefined) =>
-    withImagePath(imgPath, (path) =>
-      buildWsrvURL(`/original${path}`, 2560, 82, null)
-    ),
-  w500Image: (imgPath: string | null | undefined) =>
-    withImagePath(imgPath, (path) =>
-      buildWsrvURL(`/w500${path}`, undefined, undefined, null)
-    ),
-  // The hero's title wordmark. It renders as a plain <img>, so the loader never
-  // sees it and its width and quality are chosen here. Read from `/original` so
-  // getLogoImageSrcSet can hand out real widths; `&we` keeps a small source from
-  // being enlarged, and the largest file is only fetched by a screen that can
-  // show it.
-  logoImage: (imgPath: string | null | undefined, width = 500) =>
-    withImagePath(imgPath, (path) =>
-      buildWsrvURL(`/original${path}`, width, 70)
-    ),
-  w185Image: (imgPath: string | null | undefined) =>
-    withImagePath(imgPath, (path) =>
-      buildWsrvURL(`/w185${path}`, undefined, 80)
-    ),
-  w300Image: (imgPath: string | null | undefined) =>
-    withImagePath(imgPath, (path) =>
-      buildWsrvURL(`/w300${path}`, undefined, 80)
-    ),
-}
 
+// Every image starts on wsrv.nl: free, keyless, Cloudflare-cached for
+// with no monthly bandwidth to run out of. A metered host cannot be p
+// here: a prerendered page cannot walk BlurredImage's onError chain u
+// has hydrated, so a spent quota leaves the whole first screen on fai
+// (ImageKit, 2026-10-30, LCP 6.7s on prod).
+//
+// Two of these are read bare, without the loader: `originalImage` by
+// Twitter tags and the Worker's metadata, `w500Image` by the image si
+// JSON-LD. Their consumers do not all decode WebP, so they keep the s
+// format, and the 2560 is an unfurl width, not the page's ceiling. Ev
+// on a page goes through lib/image-loader.ts, which sets the width, t
+// quality (65 backdrops / 70 posters) and WebP per candidate.
+const originalImage = (imgPath: string | null | undefined) =>
+  withImagePath(imgPath, (path) =>
+    buildWsrvURL(`/original${path}`, 2560, 82, null)
+  )
+
+const w500Image = (imgPath: string | null | undefined) =>
+  withImagePath(imgPath, (path) =>
+    buildWsrvURL(`/w500${path}`, undefined, undefined, null)
+  )
+
+// The hero's title wordmark. It renders as a plain <img>, so the load
+// sees it and its width and quality are chosen here. Read from `/orig
+// getLogoImageSrcSet can hand real widths; `&we` keeps a small so
+// being enlarged, and the largest file is only fetched by a s
+// show it.
+const logoImage = (imgPath: string | null | undefined, width = 500) =>
+  withImagePath(imgPath, (path) =>
+    buildWsrvURL(`/w${width}${path}`, undefined, undefined, null)
+  )
+
+const w185Image = (imgPath: string | null | undefined) =>
+  withImagePath(imgPath, (path) =>
+    buildWsrvURL(`/w185${path}`, undefined, undefined, 80)
+  )
+
+const w300Image = (imgPath: string | null | undefined) =>
+  withImagePath(imgPath, (path) =>
+    buildWsrvURL(`/w300${path}`, undefined, 80)
+  )
 // TMDB's own image origin — free, keyless, unmetered, never expires. The last
 // resort in the fallback chain so images can never all break at once.
 const TMDB_ORIGIN_IMAGE_BASE = 'https://image.tmdb.org/t/p'
