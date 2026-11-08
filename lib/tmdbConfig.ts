@@ -10,6 +10,21 @@ const apiConfig = {
   headerKey() {
     return "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNGNhNWIwMTA2MTI0NzIyZjhkOGIzOWZmZjIwYmUwNSIsInN1YiI6IjY2MjBlNzI5ZjkzNjIwMGMzZmYmZzImIic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.BGYRS_5p23pV-cOVZF1QKmHOWLI6iMsNOQrmvEFkpT8"
   },
+  originalImage(imgPath: string | null | undefined) {
+    return originalImage(imgPath)
+  },
+  w500Image(imgPath: string | null | undefined) {
+    return w500Image(imgPath)
+  },
+  logoImage(imgPath: string | null | undefined, width = 500) {
+    return logoImage(imgPath, width)
+  },
+  w300Image(imgPath: string | null | undefined) {
+    return w300Image(imgPath)
+  },
+  w185Image(imgPath: string | null | undefined) {
+    return w185Image(imgPath)
+  },
 }
 
 const EMPTY_PIXEL =
@@ -67,11 +82,13 @@ function buildWsrvURL(
   return `https://images.weserv.nl/?url=image.tmdb.org/t/p${path}${widthParam}&q=${q}${outputParam}&we`
 }
 
-function buildWsrvPlaceholderURL(path: string) {
+function buildWsrvPlaceholderURL(path?: string) {
+  if (!path) return EMPTY_PIXEL
   return buildWsrvURL(path, 30, 20, 'webp')
 }
 
-function extractTMDBPath(src: string): string {
+function extractTMDBPath(src?: string): string {
+  if (!src) return ''
   const marker = 'image.tmdb.org/t/p'
   const idx = src.indexOf(marker)
   if (idx !== -1) {
@@ -80,20 +97,31 @@ function extractTMDBPath(src: string): string {
   return src
 }
 
-function isWsrvURL(src: string): boolean {
-  return src.includes('images.weserv.nl')
+function isWsrvURL(src?: string): boolean {
+  return !!src && src.includes('images.weserv.nl')
 }
 
-// Image fallback memory & error handlers stubbed for build compatibility
-const demoteFromPrimary = () => {}
-const getNextImageFallback = (url: string) => url
+const demoteFromPrimary = (_host?: string) => {}
+const getNextImageFallback = (url?: string) => url || EMPTY_PIXEL
 const isPrimaryImageHostDown = () => false
-const markPrimaryImageHostDown = () => {}
-const subscribePrimaryImageHost = () => () => {}
-const handleImageFallbackError = () => {}
+const markPrimaryImageHostDown = (_host?: string) => {}
+const subscribePrimaryImageHost = (_cb?: any) => () => {}
+const handleImageFallbackError = (_e?: any) => {}
 
-const movieType = 'movie'
-const tvType = 'tv'
+const movieType = {
+  movie: 'movie',
+  now_playing: 'now_playing',
+  trending: 'trending',
+  top_rated: 'top_rated',
+  popular: 'popular',
+}
+
+const tvType = {
+  tv: 'tv',
+  trending: 'trending',
+  popular: 'popular',
+  top_rated: 'top_rated',
+}
 
 export {
   apiConfig,
